@@ -107,3 +107,15 @@ a:hover{text-decoration:underline}
 
 /* ===== Utility ===== */
 [hidden]{ display:none !important }
+
+/* diagram */
+.diagram-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px}
+.diagram-svg{width:100%; height:auto; display:block; background:#0b1220; border-radius:12px; border:1px solid var(--line)}
+.diagram-hint{margin-top:8px; color:var(--muted); font-size:13px}
+@media (prefers-color-scheme: light){
+  .diagram-svg{background:#ffffff}
+}
+@media (max-width: 768px){
+  /* モバイルは縮小スケールで見切れ防止 */
+  .diagram-svg{max-height:420px}
+}
