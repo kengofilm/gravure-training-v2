@@ -316,17 +316,28 @@ function hookDiagram(){
     gotoGlossary(term);
   });
 }
-// 用語集へ遷移し検索
+// 用語集へ遷移し検索＆表示
 function gotoGlossary(term){
-  // タブ切替（あなたの既存の切替関数に合わせて調整）
-  setActiveTab('glossary'); // 例：用語タブのidが 'glossary'
-  const input = document.querySelector('#glossarySearch'); // 用語検索のinputのid
+  setActiveTab('glossary');
+
+  // 実際の検索ボックスIDは #gSearch
+  var input = document.getElementById('gSearch');
   if(input){
-    input.value = term;
-    // 既存のフィルタ関数に合わせて呼ぶ（例）
-    if(typeof filterGlossary === 'function') filterGlossary();
+    input.value = term || '';
   }
-  // スクロール上部へ
+  // 既存の描画関数でフィルタ実行
+  if(typeof renderGlossary === 'function') renderGlossary();
+
+  // 一致用語があれば詳細を開く
+  if(term){
+    var t = STATE.glossary.find(function(g){ return g.term === term; }) ||
+            STATE.glossary.find(function(g){ return (g.term||'').indexOf(term)>=0; });
+    if(t && typeof showTerm === 'function'){
+      showTerm(t);
+      var det = document.getElementById('gDetail');
+      if(det){ det.scrollIntoView({behavior:'smooth', block:'start'}); }
+    }
+  }
   window.scrollTo({top:0, behavior:'smooth'});
 }
 // 起動時に有効化
