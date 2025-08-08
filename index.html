@@ -39,14 +39,6 @@
     @media (min-width:960px){ .safe{padding:16px 16px 88px;max-width:900px;margin:0 auto} .nav{left:50%;right:unset;width:900px;transform:translateX(-50%);border-radius:12px 12px 0 0} }
   </style>
 </head>
-  <script>
-window.addEventListener('error', e => {
-  const b=document.createElement('div');
-  b.style.cssText='position:fixed;left:0;right:0;bottom:0;background:#ef4444;color:#fff;padding:8px 12px;font:14px system-ui;z-index:9999';
-  b.textContent='JSエラー: ' + (e.message||'') + ' @ ' + (e.filename||'') + ':' + (e.lineno||'');
-  document.body.appendChild(b);
-});
-</script>
 <body>
   <div class="topbar">
     <div class="brand"><span>🎨</span><h1>グラビア印刷ラーニング v2</h1></div>
@@ -159,5 +151,13 @@ window.addEventListener('error', e => {
   </nav>
 
   <script src="./app.js?v=20250808"></script>
+  <script>
+window.addEventListener('error', e => {
+  const b=document.createElement('div');
+  b.style.cssText='position:fixed;left:0;right:0;bottom:0;background:#ef4444;color:#fff;padding:8px 12px;font:14px system-ui;z-index:9999';
+  b.textContent='JSエラー: ' + (e.message||'') + ' @ ' + (e.filename||'') + ':' + (e.lineno||'');
+  document.body.appendChild(b);
+});
+</script>
 </body>
 </html>
