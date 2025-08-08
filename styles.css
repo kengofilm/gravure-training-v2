@@ -1,55 +1,109 @@
-/* 詳細スタイル（クリティカルCSSの後段） */
+/* ===== Base (Dark/Light対応) ===== */
 :root{
   --bg:#0f172a; --card:#111827; --ink:#e5e7eb; --muted:#9ca3af;
-  --pri:#4f46e5; --pri2:#22c55e; --ok:#16a34a; --ng:#ef4444; --chip:#334155;
+  --pri:#4f46e5; --ok:#16a34a; --ng:#ef4444; --chip:#334155;
+  --line:#1f2937; --line2:#475569;
 }
 @media (prefers-color-scheme: light){
-  :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --chip:#e2e8f0; }
+  :root{
+    --bg:#f6f7fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --chip:#e2e8f0; --line:#e5e7eb; --line2:#cbd5e1;
+  }
 }
-a{color:#93c5fd}
-kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;background:#0b1220;border:1px solid #374151;border-radius:6px;padding:1px 6px}
-/* === Contrast Fix Patch v20250808b === */
-/* Buttons */
-.btn{
-  background: var(--pri);
-  color: #ffffff;
-  border: none;
+html,body{height:100%}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
 }
-.btn:focus{ outline: 2px solid rgba(255,255,255,.35); outline-offset: 2px; }
-.btn.secondary{
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #475569;
-}
-.btn.secondary:active{ transform: translateY(1px); }
+a{color:#93c5fd; text-decoration:none}
+a:hover{text-decoration:underline}
+.safe{padding:calc(env(safe-area-inset-top,0) + 8px) 12px calc(env(safe-area-inset-bottom,0) + 72px)}
 
-/* Choices (answers) */
+/* ===== Layout ===== */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  backdrop-filter:saturate(1.1) blur(6px);
+  background:rgba(17,24,39,.85); /* fallback */
+}
+@media (prefers-color-scheme: light){
+  .topbar{ background:rgba(255,255,255,.85); }
+}
+.topbar{ padding:8px 12px; border-bottom:1px solid var(--line); display:flex; gap:10px; align-items:center; justify-content:space-between }
+
+.panel{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:12px; margin:10px 0;
+}
+
+/* ===== Bottom Nav ===== */
+.nav{
+  position:fixed; left:0; right:0; bottom:0; height:64px;
+  background:var(--card); border-top:1px solid var(--line);
+  display:grid; grid-template-columns:repeat(4,1fr); z-index:20;
+}
+.nav button{
+  background:none; border:none; color:var(--ink);
+  font-size:13px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px;
+}
+.nav button.active{ color:#fff }
+
+/* ===== Buttons ===== */
+.btn{
+  background:var(--pri); color:#fff; border:none;
+  border-radius:12px; padding:14px 16px; font-size:16px; cursor:pointer;
+}
+.btn:focus{ outline:2px solid rgba(255,255,255,.35); outline-offset:2px }
+.btn.secondary{
+  background:#1f2937; color:#e5e7eb; border:1px solid #475569;
+}
+@media (prefers-color-scheme: light){
+  .btn.secondary{ background:#e5e7eb; color:#111827; border-color:#cbd5e1; }
+}
+
+/* ===== Inputs ===== */
+.input{
+  background:#0b1220; color:#e5e7eb; border:1px solid #374151;
+  border-radius:10px; padding:12px; width:100%; font-size:16px;
+}
+@media (prefers-color-scheme: light){
+  .input{ background:#ffffff; color:#111827; border-color:#cbd5e1; }
+}
+
+/* ===== Choices (Answers) ===== */
+.choices{ display:grid; grid-template-columns:1fr; gap:10px }
 .choice{
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #475569;
+  background:#1f2937; color:#e5e7eb; border:1px solid #475569;
+  border-radius:12px; padding:14px; text-align:left; font-size:16px; cursor:pointer;
 }
 .choice.correct{
-  background: #065f46;
-  color: #ffffff;
-  border-color: #10b981;
+  background:#065f46; color:#ffffff; border-color:#10b981;
 }
 .choice.wrong{
-  background: #7f1d1d;
-  color: #ffffff;
-  border-color: #ef4444;
+  background:#7f1d1d; color:#ffffff; border-color:#ef4444;
 }
-
-/* Input fields */
-.input{
-  background: #111827;
-  color: #e5e7eb;
-  border: 1px solid #475569;
-}
-
-/* Light mode overrides */
 @media (prefers-color-scheme: light){
-  .btn.secondary{ background: #e5e7eb; color: #111827; border-color: #cbd5e1; }
-  .choice{ background: #ffffff; color: #111827; border-color: #cbd5e1; }
-  .input{ background: #ffffff; color: #111827; border-color: #cbd5e1; }
+  .choice{ background:#ffffff; color:#111827; border-color:#cbd5e1; }
 }
+
+/* ===== Chips, Tags ===== */
+.tag{
+  display:inline-block; background:var(--chip); color:#e5e7eb;
+  padding:2px 8px; border-radius:999px; font-size:12px; margin-right:6px;
+}
+@media (prefers-color-scheme: light){ .tag{ color:#0f172a } }
+
+/* ===== Typography helpers ===== */
+.qhead{ font-size:18px; font-weight:700; margin:.2em 0 }
+.qmeta{ color:var(--muted); font-size:13px; margin-bottom:6px }
+
+/* ===== Responsive wide ===== */
+@media (min-width:960px){
+  .safe{ padding:16px 16px 88px; max-width:900px; margin:0 auto }
+  .nav{ left:50%; right:unset; width:900px; transform:translateX(-50%); border-radius:12px 12px 0 0 }
+}
+
+/* ===== Utility ===== */
+[hidden]{ display:none !important }
