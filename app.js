@@ -317,3 +317,36 @@ function gotoGlossary(term){
 }
 // 起動時に有効化
 document.addEventListener('DOMContentLoaded', hookDiagram);
+// === Safe tab switch for both #tab-xxx and #xxxPanel ===
+function setActiveTab(tab){
+  var names = ['train','glossary','diagram','handbook'];
+  for(var i=0;i<names.length;i++){
+    var n = names[i];
+    var panel = document.getElementById('tab-'+n) || document.getElementById(n+'Panel');
+    if(panel){ panel.hidden = (n !== tab); }
+    var btn = document.getElementById('btn-'+n) || document.querySelector('.nav button[data-tab="'+n+'"]');
+    if(btn){ btn.classList.toggle('active', n === tab); }
+  }
+  try{ localStorage.setItem('activeTab', tab); }catch(e){}
+}
+
+// === Diagram → Glossary jump (IDs合わせ済み) ===
+function gotoGlossary(term){
+  setActiveTab('glossary');          // タブ切替を安全に
+  var input = document.getElementById('gSearch'); // 実際の検索BOX
+  if(input){
+    input.value = term || '';
+    // 既存の描画関数でフィルタ実行
+    if(typeof renderGlossary === 'function') renderGlossary();
+  }
+  // 詳細パネルがあれば最上部へ
+  var det = document.getElementById('gDetail');
+  if(det){ det.scrollIntoView({behavior:'smooth', block:'start'}); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// 既存DOMContentLoadedに追加でOK（重複しても安全）
+document.addEventListener('DOMContentLoaded', function(){
+  // 図式のdata-termクリック対応（既存hookDiagramがあればそれでOK）
+  if(typeof hookDiagram === 'function') hookDiagram();
+});
