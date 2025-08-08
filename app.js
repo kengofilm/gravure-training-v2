@@ -291,3 +291,29 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, function(m){ r
 
 // boot
 loadData();
+// 図式ボックスをタップ → 用語集へ
+function hookDiagram(){
+  const svg = document.querySelector('#diagramPanel .diagram-svg');
+  if(!svg) return;
+  svg.addEventListener('click', (e)=>{
+    const target = e.target.closest('[data-term]');
+    if(!target) return;
+    const term = target.getAttribute('data-term');
+    gotoGlossary(term);
+  });
+}
+// 用語集へ遷移し検索
+function gotoGlossary(term){
+  // タブ切替（あなたの既存の切替関数に合わせて調整）
+  setActiveTab('glossary'); // 例：用語タブのidが 'glossary'
+  const input = document.querySelector('#glossarySearch'); // 用語検索のinputのid
+  if(input){
+    input.value = term;
+    // 既存のフィルタ関数に合わせて呼ぶ（例）
+    if(typeof filterGlossary === 'function') filterGlossary();
+  }
+  // スクロール上部へ
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+// 起動時に有効化
+document.addEventListener('DOMContentLoaded', hookDiagram);
