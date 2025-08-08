@@ -16,33 +16,75 @@
     <div id="stats" class="tag">ロード中…</div>
   </div>
   <main class="safe">
-    <section id="tab-train" class="panel">
-      <div style="display:grid;gap:12px">
-        <div style="display:grid;gap:6px">
-          <label class="tag">出題モード</label>
-          <select id="mode" class="input">
-            <option value="random">ランダム</option>
-            <option value="category">カテゴリ指定</option>
-            <option value="weak">苦手分野優先</option>
-            <option value="wrong">間違えた問題のみ</option>
-          </select>
-        </div>
-        <div id="catWrap" style="display:grid;gap:6px">
-          <label class="tag">カテゴリ（複数選択可）</label>
-          <select id="category" multiple size="6" class="input"></select>
-        </div>
-        <div style="display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr))">
-          <button class="btn secondary btn-qty" data-n="10">10問</button>
-          <button class="btn secondary btn-qty" data-n="30">30問</button>
-          <button class="btn secondary btn-qty" data-n="50">50問</button>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input id="count" type="number" min="1" max="200" value="10" class="input" style="max-width:120px"/>
-          <button id="start" class="btn" style="flex:1">▶ スタート</button>
-        </div>
-      </div>
-      <div id="game" style="margin-top:10px"></div>
-    </section>
+    <section id="diagramPanel" class="panel" hidden>
+  <h2>図式モード（入稿 → 色校正 → 製版 → 実機刷り）</h2>
+  <div class="diagram-card">
+    <svg viewBox="0 0 960 420" role="img" aria-label="gravure flow" class="diagram-svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e"></path>
+        </marker>
+        <style>
+          .bx{rx:14; ry:14; fill:#0b1220; stroke:#334155; stroke-width:2}
+          .tx{font: 600 14px/1.3 system-ui, -apple-system, "Noto Sans JP", sans-serif; fill:#e5e7eb}
+          .sub{font: 12px system-ui, -apple-system, "Noto Sans JP", sans-serif; fill:#9ca3af}
+          .ln{stroke:#22c55e; stroke-width:3; marker-end:url(#arrow)}
+          @media (prefers-color-scheme: light){
+            .bx{fill:#ffffff; stroke:#cbd5e1}
+            .tx{fill:#0f172a} .sub{fill:#64748b}
+          }
+        </style>
+      </defs>
+
+      <!-- 上段メインフロー -->
+      <!-- デザイン入稿 -->
+      <rect class="bx" x="40"  y="60"  width="200" height="70" rx="14" data-term="デザイン入稿"/>
+      <text class="tx" x="140" y="90" text-anchor="middle">デザイン入稿</text>
+      <text class="sub" x="140" y="110" text-anchor="middle">データ/プロファイル</text>
+
+      <!-- 色校正 -->
+      <rect class="bx" x="300" y="60"  width="200" height="70" rx="14" data-term="色校正"/>
+      <text class="tx" x="400" y="90" text-anchor="middle">色校正</text>
+      <text class="sub" x="400" y="110" text-anchor="middle">標準見本/ΔE/D50</text>
+
+      <!-- 製版/版 -->
+      <rect class="bx" x="560" y="60"  width="200" height="70" rx="14" data-term="グラビア版"/>
+      <text class="tx" x="660" y="90" text-anchor="middle">製版 / 版</text>
+      <text class="sub" x="660" y="110" text-anchor="middle">セル/線数/彫刻</text>
+
+      <!-- 実機刷り -->
+      <rect class="bx" x="820" y="60"  width="100" height="70" rx="14" data-term="刷り出し確認"/>
+      <text class="tx" x="870" y="90" text-anchor="middle">実機刷り</text>
+      <text class="sub" x="870" y="110" text-anchor="middle">条件最適/QA</text>
+
+      <!-- メイン矢印 -->
+      <line class="ln" x1="240" y1="95" x2="300" y2="95"/>   <!-- 入稿→色校 -->
+      <line class="ln" x1="500" y1="95" x2="560" y2="95"/>   <!-- 色校→製版 -->
+      <line class="ln" x1="760" y1="95" x2="820" y2="95"/>   <!-- 製版→実機 -->
+
+      <!-- 下段（品質キーポイント） -->
+      <!-- 白引き -->
+      <rect class="bx" x="120" y="240" width="160" height="60" rx="14" data-term="白引き"/>
+      <text class="tx" x="200" y="268" text-anchor="middle">白引き</text>
+
+      <!-- 見当/レジ -->
+      <rect class="bx" x="360" y="240" width="160" height="60" rx="14" data-term="レジスター"/>
+      <text class="tx" x="440" y="268" text-anchor="middle">見当 / レジ</text>
+
+      <!-- 乾燥/残留溶剤 -->
+      <rect class="bx" x="600" y="240" width="200" height="60" rx="14" data-term="乾燥不良"/>
+      <text class="tx" x="700" y="268" text-anchor="middle">乾燥 / 残留溶剤</text>
+
+      <!-- 下段矢印（白引き→見当/レジ→乾燥）※曲がらず水平で修正 -->
+      <line class="ln" x1="280" y1="270" x2="360" y2="270"/>
+      <line class="ln" x1="520" y1="270" x2="600" y2="270"/>
+
+      <!-- 白引きから上段の色校正へ戻る補助矢印（短い斜め） -->
+      <line class="ln" x1="240" y1="240" x2="340" y2="130"/>
+    </svg>
+    <div class="diagram-hint">ボックスをタップすると該当用語ページへ移動します</div>
+  </div>
+</section>
 
     <section id="tab-glossary" class="panel" hidden>
       <div class="gl-search">
