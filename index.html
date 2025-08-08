@@ -6,38 +6,9 @@
   <title>グラビア印刷ラーニング v2</title>
   <link rel="stylesheet" href="./styles.css?v=20250808" onload="document.documentElement.dataset.css='ok'">
   <meta name="color-scheme" content="light dark">
-  <style>
-    :root{--bg:#0f172a;--card:#111827;--ink:#e5e7eb;--muted:#9ca3af;--pri:#4f46e5;--ok:#16a34a;--ng:#ef4444;--chip:#334155}
-    @media (prefers-color-scheme: light){
-      :root{--bg:#f6f7fb;--card:#ffffff;--ink:#0f172a;--muted:#64748b;--chip:#e2e8f0}
-    }
-    html,body{height:100%} body{margin:0;background:linear-gradient(135deg,var(--bg),#030712);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-    .safe{padding:calc(env(safe-area-inset-top,0) + 8px) 12px calc(env(safe-area-inset-bottom,0) + 72px)}
-    .topbar{position:sticky;top:0;z-index:10;backdrop-filter:saturate(1.2) blur(6px);background:color-mix(in srgb, var(--card) 80%, transparent);padding:8px 12px;border-bottom:1px solid #1f2937;display:flex;gap:10px;align-items:center;justify-content:space-between}
-    .brand{display:flex;gap:8px;align-items:center}
-    .brand h1{font-size:18px;margin:0}
-    .panel{background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:12px;margin:10px 0}
-    .nav{position:fixed;left:0;right:0;bottom:0;height:64px;background:var(--card);border-top:1px solid #1f2937;display:grid;grid-template-columns:repeat(4,1fr);z-index:20}
-    .nav button{background:none;border:none;color:var(--ink);font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-    .nav button.active{color:#fff}
-    .nav .icon{font-size:18px;line-height:18px}
-    .btn{background:var(--pri);color:#fff;border:none;border-radius:12px;padding:14px 16px;font-size:16px}
-    .btn.secondary{background:#0b1220;border:1px solid #374151;color:var(--ink)}
-    .choices{display:grid;grid-template-columns:1fr;gap:10px}
-    .choice{background:#0b1220;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:14px;text-align:left;font-size:16px}
-    .choice.correct{border-color:var(--ok);box-shadow:0 0 0 2px color-mix(in srgb, var(--ok) 40%, transparent)}
-    .choice.wrong{border-color:var(--ng);box-shadow:0 0 0 2px color-mix(in srgb, var(--ng) 40%, transparent)}
-    .qcard{border:1px solid #27324a;border-radius:14px;overflow:hidden}
-    .qhead{padding:14px 14px 6px;font-weight:700}
-    .qmeta{padding:0 14px 10px;color:var(--muted);font-size:12px}
-    .tag{display:inline-block;background:var(--chip);padding:2px 8px;border-radius:999px;margin-right:6px;font-size:12px}
-    .gl-search{display:flex;gap:8px}
-    .input{background:#0b1220;color:#e5e7eb;border:1px solid #374151;border-radius:10px;padding:12px;width:100%;font-size:16px}
-    .term{padding:12px;border:1px solid #334155;border-radius:12px;background:#0b1220}
-    .detail{margin-top:10px;padding:12px;border:1px dashed #334155;border-radius:12px;background:#0b1220}
-    .panel[hidden]{display:none}
-    @media (min-width:960px){ .safe{padding:16px 16px 88px;max-width:900px;margin:0 auto} .nav{left:50%;right:unset;width:900px;transform:translateX(-50%);border-radius:12px 12px 0 0} }
-  </style>
+  <!-- head内どこかにこれ1行あればOK（vは好きな値で更新） -->
+<link rel="stylesheet" href="./styles.css?v=20250809">
+ 
 </head>
 <body>
   <div class="topbar">
