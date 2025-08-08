@@ -1,0 +1,10 @@
+/* 詳細スタイル（クリティカルCSSの後段） */
+:root{
+  --bg:#0f172a; --card:#111827; --ink:#e5e7eb; --muted:#9ca3af;
+  --pri:#4f46e5; --pri2:#22c55e; --ok:#16a34a; --ng:#ef4444; --chip:#334155;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --chip:#e2e8f0; }
+}
+a{color:#93c5fd}
+kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;background:#0b1220;border:1px solid #374151;border-radius:6px;padding:1px 6px}
