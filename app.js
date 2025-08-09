@@ -96,17 +96,33 @@ function normalizeQuestions(any){
   });
   return arr;
 }
+// ===== alias対応版 normalizeGlossary =====
 function normalizeGlossary(any){
   var arr = Array.isArray(any) ? any : (any && (any.items||any.data) ? (any.items||any.data) : []);
   var out = [];
   (arr||[]).forEach(function(t){
     if(!t || typeof t!=='object') return;
+
     var term = t.term || t['用語'] || t.name || t.title;
     var cat  = t.cat  || t.category || t['カテゴリ'] || "";
     var desc = t.desc || t.description || t.meaning || t.explanation || t['説明'];
-    if(typeof term==='string' && typeof desc==='string'){ out.push({term:term, cat:cat, desc:desc}); }
+
+    // alias 正規化
+    var rawAlias = t.alias || t['別名'] || t.aka || null;
+    var alias = [];
+    if (Array.isArray(rawAlias)) {
+      alias = rawAlias.filter(function(x){ return typeof x === 'string' && x.trim(); });
+    } else if (typeof rawAlias === 'string') {
+      alias = rawAlias.split(/[、,\/]/).map(function(x){ return x.trim(); }).filter(Boolean);
+    }
+
+    if(typeof term==='string' && typeof desc==='string'){
+      out.push({term:term, cat:cat, desc:desc, alias:alias});
+    }
   });
   return out;
+}
+
 }
 
 function initUI(){
@@ -235,28 +251,55 @@ function endSession(){
 }
 
 // ===== Glossary =====
+// ===== alias対応版 renderGlossary =====
 function renderGlossary(){
   var q=(byId('gSearch').value||'').trim().toLowerCase();
   var cat=byId('gCat').value || 'all';
   var list=byId('gList'); list.innerHTML='';
+
   var filtered=STATE.glossary.filter(function(t){
     var okCat=(cat==='all' || t.cat===cat);
-    var okQ=(!q || (t.term||'').toLowerCase().indexOf(q)>=0 || (t.desc||'').toLowerCase().indexOf(q)>=0);
+    var inTerm = (t.term||'').toLowerCase().indexOf(q)>=0;
+    var inDesc = (t.desc||'').toLowerCase().indexOf(q)>=0;
+    var inAlias = Array.isArray(t.alias) && t.alias.some(function(a){ return (a||'').toLowerCase().indexOf(q)>=0; });
+    var okQ = (!q || inTerm || inDesc || inAlias);
     return okCat && okQ;
   });
+
   byId('gCount').textContent = filtered.length+' 語';
+
   filtered.forEach(function(t){
     var el=document.createElement('li'); el.className='term';
-    el.innerHTML = '<div><b>'+escapeHtml(t.term)+'</b> <span class="tag">'+escapeHtml(t.cat||'')+'</span></div><div style="opacity:.9;margin-top:4px">'+escapeHtml(t.desc||'')+'</div>';
-    el.addEventListener('click', function(){ showTerm(t); }); list.appendChild(el);
+    var aliasHtml = (t.alias && t.alias.length)
+      ? '<div class="muted" style="margin-top:4px;font-size:12px">別称: '+
+        t.alias.map(function(a){ return '<span class="tag">'+escapeHtml(a)+'</span>'; }).join(' ')
+        +'</div>'
+      : '';
+    el.innerHTML =
+      '<div><b>'+escapeHtml(t.term)+'</b> <span class="tag">'+escapeHtml(t.cat||'')+'</span></div>'+
+      '<div style="opacity:.9;margin-top:4px">'+escapeHtml(t.desc||'')+'</div>'+ aliasHtml;
+    el.addEventListener('click', function(){ showTerm(t); });
+    list.appendChild(el);
   });
+
   byId('gDetail').hidden=true;
 }
+
+// ===== alias対応版 showTerm =====
 function showTerm(t){
   var d=byId('gDetail'); d.hidden=false;
-  d.innerHTML = '<b style="font-size:18px">'+escapeHtml(t.term)+'</b> <span class="tag">'+escapeHtml(t.cat||'')+'</span>'+
-  '<div style="margin-top:6px;line-height:1.6">'+escapeHtml(t.desc||'')+'</div>';
+  var aliasHtml = (t.alias && t.alias.length)
+    ? '<div class="muted" style="margin-top:8px">別称: '+
+      t.alias.map(function(a){ return '<span class="tag">'+escapeHtml(a)+'</span>'; }).join(' ')
+      +'</div>'
+    : '';
+  d.innerHTML =
+    '<b style="font-size:18px">'+escapeHtml(t.term)+'</b> '+
+    '<span class="tag">'+escapeHtml(t.cat||'')+'</span>'+
+    '<div style="margin-top:6px;line-height:1.6">'+escapeHtml(t.desc||'')+'</div>'+
+    aliasHtml;
 }
+
 
 // ===== Handbook =====
 function renderHandbook(){
@@ -297,15 +340,24 @@ function renderHandbook(){
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=a[i]; a[i]=a[j]; a[j]=tmp; } }
 function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
 
-// Diagram → Glossary jump
+// ===== alias対応版 gotoGlossary =====
 function gotoGlossary(term){
   setActiveTab('glossary');
   var input = document.getElementById('gSearch');
   if(input){ input.value = term || ''; }
   if(typeof renderGlossary === 'function') renderGlossary();
+
   if(term){
-    var t = STATE.glossary.find(function(g){ return g.term === term; }) ||
-            STATE.glossary.find(function(g){ return (g.term||'').indexOf(term)>=0; });
+    var lower = term.toLowerCase();
+    var t = STATE.glossary.find(function(g){
+      if((g.term||'').toLowerCase()===lower) return true;
+      if(Array.isArray(g.alias) && g.alias.some(function(a){ return (a||'').toLowerCase()===lower; })) return true;
+      return false;
+    }) || STATE.glossary.find(function(g){
+      return (g.term||'').indexOf(term)>=0 ||
+             (g.desc||'').indexOf(term)>=0 ||
+             (Array.isArray(g.alias) && g.alias.some(function(a){ return (a||'').indexOf(term)>=0; }));
+    });
     if(t){ showTerm(t); var det=document.getElementById('gDetail'); if(det){ det.scrollIntoView({behavior:'smooth', block:'start'}); } }
   }
   window.scrollTo({top:0, behavior:'smooth'});
