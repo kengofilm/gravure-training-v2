@@ -36,7 +36,7 @@ main{max-width:980px;margin:14px auto;padding:0 10px}
 .choice{padding:10px;border-radius:10px;border:1px solid var(--line);background:#1f2937;color:#e5e7eb;cursor:pointer}
 .choice.correct{background:#065f46;border-color:#10b981;color:#fff}
 .choice.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff}
-.tag{display:inline-block;background:#334155;border:1px solid var(--line);border-radius:20px;padding:2px 8px;font-size:12px;margin-right:6px}
+.tag{display:inline-block;background:#e2e8f0;border:1px solid var(--line);border-radius:20px;padding:2px 8px;font-size:12px;margin-right:6px}
 .terms{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .term{padding:10px;border:1px solid var(--line);border-radius:10px;background:#0b1220}
 @media (prefers-color-scheme: light){ .term{background:#fff} }
