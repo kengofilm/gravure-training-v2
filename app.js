@@ -123,7 +123,6 @@ function normalizeGlossary(any){
   return out;
 }
 
-}
 
 function initUI(){
   var cats = Array.from(new Set(STATE.all.map(function(q){return q.cat;}))).sort();
