@@ -42,3 +42,29 @@ function loadData(){
     initUI();
   });
 }
+// ===== alias対応版 normalizeGlossary =====
+function normalizeGlossary(any){
+  var arr = Array.isArray(any) ? any : (any && (any.items||any.data) ? (any.items||any.data) : []);
+  var out = [];
+  (arr||[]).forEach(function(t){
+    if(!t || typeof t!=='object') return;
+
+    var term = t.term || t['用語'] || t.name || t.title;
+    var cat  = t.cat  || t.category || t['カテゴリ'] || "";
+    var desc = t.desc || t.description || t.meaning || t.explanation || t['説明'];
+
+    // alias 正規化
+    var rawAlias = t.alias || t['別名'] || t.aka || null;
+    var alias = [];
+    if (Array.isArray(rawAlias)) {
+      alias = rawAlias.filter(function(x){ return typeof x === 'string' && x.trim(); });
+    } else if (typeof rawAlias === 'string') {
+      alias = rawAlias.split(/[、,\/]/).map(function(x){ return x.trim(); }).filter(Boolean);
+    }
+
+    if(typeof term==='string' && typeof desc==='string'){
+      out.push({term:term, cat:cat, desc:desc, alias:alias});
+    }
+  });
+  return out;
+}
