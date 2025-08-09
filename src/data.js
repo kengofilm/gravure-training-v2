@@ -17,3 +17,28 @@ var STARTER = {
   ],
   handbook: {chapters:[{title:"スターター",sections:[{title:"概要",content:"data/ 配下に JSON を置くと自動で読み込みます。questions.json / glossary.json は最低限必要です。"}]}]}
 };
+function fetchFirst(urls){
+  return new Promise(function(resolve){
+    var i = 0;
+    function tryNext(){
+      if(i>=urls.length){ resolve(null); return; }
+      var u = urls[i++] + '?v='+(Date.now()%1000000); // 強制キャッシュ回避
+      fetch(u, {cache:'no-store'}).then(function(res){
+        if(!res.ok){ tryNext(); return; }
+        res.json().then(function(data){ resolve(data); }).catch(function(){ tryNext(); });
+      }).catch(function(){ tryNext(); });
+    }
+    tryNext();
+  });
+}
+function loadData(){
+  Promise.all([fetchFirst(DATA.questions), fetchFirst(DATA.glossary), fetchFirst(DATA.handbook)]).then(function(arr){
+    var qs = normalizeQuestions(arr[0]);
+    var gl = normalizeGlossary(arr[1]);
+    var hb = arr[2];
+    STATE.handbook = (hb && hb.chapters) ? hb : STARTER.handbook;
+    STATE.all = (qs && qs.length) ? qs : STARTER.questions;
+    STATE.glossary = (gl && gl.length) ? gl : STARTER.glossary;
+    initUI();
+  });
+}
